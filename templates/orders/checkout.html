@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="page-header"><h1>Checkout</h1></div>
+<div class="container" style="padding:50px 0;">
+  <div class="steps"><span>{% trans "Panier" %}</span> › <span class="current">{% trans "Adresse & Infos" %}</span> › <span>{% trans "Paiement" %}</span> › <span>{% trans "Confirmation" %}</span></div>
+  <div class="cart-layout">
+    <div class="form-card" style="margin:0;">
+      <form method="post">
+        {% csrf_token %}
+        <h3 style="margin-bottom:14px;">{% trans "Vos informations" %}</h3>
+        <div class="form-row">
+          <div class="form-group">{{ form.first_name.label_tag }}{{ form.first_name }}</div>
+          <div class="form-group">{{ form.last_name.label_tag }}{{ form.last_name }}</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">{{ form.phone.label_tag }}{{ form.phone }}</div>
+          <div class="form-group">{{ form.email.label_tag }}{{ form.email }}</div>
+        </div>
+        <h3 style="margin:26px 0 14px;">{% trans "Adresse de livraison" %}</h3>
+        <div class="form-row">
+          <div class="form-group">{{ form.country.label_tag }}{{ form.country }}</div>
+          <div class="form-group">{{ form.city.label_tag }}{{ form.city }}</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">{{ form.district.label_tag }}{{ form.district }}</div>
+          <div class="form-group">{{ form.postal_code.label_tag }}{{ form.postal_code }}</div>
+        </div>
+        <div class="form-group">{{ form.full_address.label_tag }}{{ form.full_address }}</div>
+        <div class="form-group">{{ form.extra_info.label_tag }}{{ form.extra_info }}</div>
+        <div class="field-hint">ℹ️ {% trans "Aucun compte n'est requis pour commander. Vous pouvez finaliser votre commande en tant qu'invitée." %}</div>
+        <button type="submit" class="btn btn-primary btn-block">{% trans "Continuer vers le paiement" %} →</button>
+      </form>
+    </div>
+    <div class="summary-card">
+      <h3 style="margin-bottom:16px;">{% trans "Votre commande" %}</h3>
+      {% for item in items %}
+      <div class="summary-row"><span>{{ item.product.name }} ×{{ item.quantity }}</span><span>{{ item.line_total }} FCFA</span></div>
+      {% endfor %}
+      <div class="summary-row total"><span>{% trans "Sous-total" %}</span><span>{{ cart.subtotal }} FCFA</span></div>
+      <p style="font-size:12px; color:var(--gris); margin-top:10px;">{% trans "Les frais de livraison seront calculés selon votre ville / pays." %}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

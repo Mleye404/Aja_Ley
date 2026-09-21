@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="page-header"><h1>{% trans "Mon compte" %}</h1></div>
+<div class="container" style="padding:50px 0;">
+  <h3>{% trans "Bonjour" %} {{ user.first_name }}</h3>
+
+  <div style="margin-top:30px;">
+    <h4>{% trans "Mes commandes" %}</h4>
+    <table class="dash-table">
+      <thead><tr><th>{% trans "Référence" %}</th><th>{% trans "Date" %}</th><th>{% trans "Statut" %}</th><th>{% trans "Total" %}</th></tr></thead>
+      <tbody>
+      {% for order in orders %}
+        <tr><td>{{ order.reference }}</td><td>{{ order.created_at|date:"d/m/Y" }}</td><td>{{ order.get_status_display }}</td><td>{{ order.total }} FCFA</td></tr>
+      {% empty %}
+        <tr><td colspan="4">{% trans "Aucune commande pour le moment." %}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:40px;">
+    <h4>{% trans "Mes adresses" %}</h4>
+    {% for addr in addresses %}
+      <p>{{ addr.full_address }}, {{ addr.city }}, {{ addr.country }}</p>
+    {% empty %}
+      <p>{% trans "Aucune adresse enregistrée." %}</p>
+    {% endfor %}
+    <a href="{% url 'accounts:address_add' %}" class="btn btn-outline btn-sm">{% trans "Ajouter une adresse" %}</a>
+  </div>
+
+  <div style="margin-top:40px;">
+    <a href="{% url 'products:favorites' %}" class="btn btn-outline btn-sm">{% trans "Mes favoris" %}</a>
+    <a href="{% url 'accounts:logout' %}" class="btn btn-outline btn-sm">{% trans "Se déconnecter" %}</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="page-header"><h1>{% trans "Vos mensurations" %}</h1><div class="breadcrumb">{{ product.name }}</div></div>
+<div class="container" style="padding:50px 0;">
+  <div class="steps"><span>{% trans "Produit" %}</span> › <span class="current">{% trans "Mensurations" %}</span> › <span>{% trans "Panier" %}</span> › <span>{% trans "Checkout" %}</span></div>
+  <div class="form-card">
+    <div class="field-hint">{% blocktrans %}Prenez vos mesures en centimètres, sans trop serrer le mètre. Ces informations seront transmises à notre couturière pour{% endblocktrans %} {{ product.name }}.</div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">{{ form.bust.label_tag }}{{ form.bust }}</div>
+        <div class="form-group">{{ form.waist.label_tag }}{{ form.waist }}</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">{{ form.hips.label_tag }}{{ form.hips }}</div>
+        <div class="form-group">{{ form.shoulders.label_tag }}{{ form.shoulders }}</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">{{ form.desired_length.label_tag }}{{ form.desired_length }}</div>
+        <div class="form-group">{{ form.sleeve_length.label_tag }}{{ form.sleeve_length }}</div>
+      </div>
+      <div class="form-group">{{ form.extra_notes.label_tag }}{{ form.extra_notes }}</div>
+      {{ form.non_field_errors }}
+      <button type="submit" class="btn btn-primary btn-block">{% if editing %}{% trans "Mettre à jour" %}{% else %}{% trans "Valider et ajouter au panier" %}{% endif %}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

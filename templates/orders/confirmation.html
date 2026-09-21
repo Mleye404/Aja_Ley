@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="container confirm-box">
+  <div class="confirm-icon">✓</div>
+  <h1>{% trans "Commande confirmée" %}</h1>
+  <p style="color:var(--gris); margin-top:10px;">{% trans "Merci" %} {{ order.first_name }}, {% trans "votre commande a bien été enregistrée." %}</p>
+  <div class="ref-box">{{ order.reference }}</div>
+
+  <div class="form-card" style="text-align:left;">
+    <h3 style="margin-bottom:14px;">{% trans "Récapitulatif" %}</h3>
+    {% for item in order.items.all %}
+    <div class="summary-row">
+      <span>{{ item.product_name }} ×{{ item.quantity }}</span><span>{{ item.line_total }} FCFA</span>
+    </div>
+    {% endfor %}
+    <div class="summary-row"><span>{% trans "Sous-total" %}</span><span>{{ order.subtotal }} FCFA</span></div>
+    <div class="summary-row"><span>{% trans "Livraison" %}</span><span>{% if order.shipping_fee %}{{ order.shipping_fee }} FCFA{% else %}{{ order.shipping_note }}{% endif %}</span></div>
+    <div class="summary-row total"><span>{% trans "Total" %}</span><span>{{ order.total }} FCFA</span></div>
+    <div class="summary-row"><span>{% trans "Statut" %}</span><span>{{ order.get_status_display }}</span></div>
+    {% if order.payment %}
+    <div class="summary-row"><span>{% trans "Paiement" %}</span><span>{{ order.payment.get_method_display }} — {{ order.payment.get_status_display }}</span></div>
+    {% endif %}
+  </div>
+
+  <a href="https://wa.me/{{ WHATSAPP_INTL }}?text={% trans 'Bonjour, je viens de passer la commande' %}%20{{ order.reference }}" target="_blank" class="btn btn-wa" style="margin-top:20px;">{% trans "Contacter AJA LEY sur WhatsApp" %}</a>
+  <br><br>
+  <a href="{% url 'products:catalog' %}" class="btn btn-outline">{% trans "Continuer mes achats" %}</a>
+</div>
+{% endblock %}
