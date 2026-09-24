@@ -1,7 +1,7 @@
 :root{
-  --noir: #16241d;          /* vert sapin quasi-noir — fonds sombres (footer), titres, badges */
-  --violet: #2f6b4f;        /* émeraude profond — couleur d'accent principale (CTA, liens actifs) */
-  --violet-2: #1f4f39;      /* émeraude foncé — hover */
+  --noir: #211a16;          /* noir chaud neutre — fonds sombres (footer), titres, badges */
+  --violet: #4a2740;        /* aubergine profond — couleur d'accent principale (CTA, liens actifs) */
+  --violet-2: #341c2c;      /* aubergine foncé — hover */
   --creme: #faf6ee;
   --ivoire: #fffcf6;
   --rose: #cdb077;          /* or clair — touches discrètes */
@@ -70,7 +70,7 @@ h1,h2,h3,h4{font-family: var(--serif); font-weight:600; margin:0; color: var(--n
 /* ---- Navbar ---- */
 .navbar{
   background: var(--ivoire);
-  border-bottom: 1px solid rgba(22,36,29,.08);
+  border-bottom: 1px solid rgba(33,26,22,.08);
   position: sticky; top:0; z-index:50;
 }
 .navbar .container{display:flex; align-items:center; justify-content:space-between; height:76px; gap:16px;}
@@ -120,7 +120,7 @@ h1,h2,h3,h4{font-family: var(--serif); font-weight:600; margin:0; color: var(--n
 .hero-photo{position:relative; height:100%; padding:28px 28px 28px 0;}
 .hero-photo .photo-frame{
   position:relative; height:640px; border-radius:4px; overflow:hidden;
-  box-shadow: 0 34px 70px -24px rgba(22,36,29,.4);
+  box-shadow: 0 34px 70px -24px rgba(33,26,22,.4);
 }
 .hero-photo img{
   width:100%; height:100%; object-fit:cover;
@@ -147,7 +147,7 @@ h1,h2,h3,h4{font-family: var(--serif); font-weight:600; margin:0; color: var(--n
 .cat-card img{width:100%; height:100%; object-fit:cover; transition:transform .6s var(--ease);}
 .cat-card:hover img{transform:scale(1.07);}
 .cat-overlay{
-  position:absolute; inset:0; background:linear-gradient(180deg, rgba(22,36,29,.02) 45%, rgba(22,36,29,.82) 100%);
+  position:absolute; inset:0; background:linear-gradient(180deg, rgba(33,26,22,.02) 45%, rgba(33,26,22,.82) 100%);
   display:flex; flex-direction:column; justify-content:flex-end; padding:22px; color:#fff;
 }
 .cat-overlay h3{color:#fff; font-size:21px;}
@@ -327,7 +327,7 @@ table.dash-table th, table.dash-table td{padding:12px 14px; border-bottom:1px so
   .mobile-nav-backdrop{
     display:block;
     position:fixed; inset:0; z-index:190;
-    background:rgba(22,36,29,.35);
+    background:rgba(33,26,22,.35);
     opacity:0; visibility:hidden;
     transition:opacity .3s var(--ease), visibility .3s var(--ease);
   }
@@ -338,7 +338,7 @@ table.dash-table th, table.dash-table td{padding:12px 14px; border-bottom:1px so
     position:fixed; top:0; right:0; bottom:0; z-index:200;
     width:min(86vw, 360px);
     background:var(--ivoire);
-    box-shadow:-12px 0 40px -12px rgba(22,36,29,.25);
+    box-shadow:-12px 0 40px -12px rgba(33,26,22,.25);
     transform:translateX(100%);
     transition:transform .32s var(--ease);
     overflow-y:auto;
@@ -347,7 +347,7 @@ table.dash-table th, table.dash-table td{padding:12px 14px; border-bottom:1px so
 
   .mobile-nav-head{
     display:flex; align-items:center; justify-content:space-between;
-    padding:20px; border-bottom:1px solid rgba(22,36,29,.08); flex-shrink:0;
+    padding:20px; border-bottom:1px solid rgba(33,26,22,.08); flex-shrink:0;
   }
   .mobile-nav-head .logo{display:flex; align-items:center; gap:8px; font-family:var(--serif); font-size:16px;}
   .mobile-nav-head .logo img{height:32px;}
@@ -359,7 +359,7 @@ table.dash-table th, table.dash-table td{padding:12px 14px; border-bottom:1px so
   .mobile-nav-links{display:flex; flex-direction:column; padding:8px 4px;}
   .mobile-nav-links a{
     padding:14px 20px; font-size:13.5px; letter-spacing:.06em; text-transform:uppercase;
-    border-bottom:1px solid rgba(22,36,29,.06);
+    border-bottom:1px solid rgba(33,26,22,.06);
   }
 
   .mobile-nav-foot{padding:20px; margin-top:auto; flex-shrink:0;}

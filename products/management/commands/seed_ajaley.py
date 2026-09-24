@@ -5,7 +5,10 @@ from django.conf import settings
 from products.models import Category, Product, ProductImage
 from orders.models import ShippingRate
 
-ASSETS_DIR = "/home/claude/assets/qadijahpics"
+# Dossier de photos livré AVEC le projet (versionné dans Git), donc portable
+# sur n'importe quelle machine après un `git clone` — ne dépend d'aucun
+# chemin local à un poste de travail en particulier.
+ASSETS_DIR = os.path.join(settings.BASE_DIR, "products", "fixtures", "source_photos")
 
 CATEGORIES = [
     {"name": "Robes", "slug": "robes", "image": "Aita_dress1.jpeg"},
@@ -43,14 +46,23 @@ SHIPPING_RATES = [
 
 
 class Command(BaseCommand):
-    help = "Charge les catégories, les 14 produits réels AJA LEY et leurs vraies photos depuis le ZIP fourni."
+    help = "Charge les catégories, les 14 produits réels AJA LEY et leurs vraies photos (livrées avec le projet)."
 
     def handle(self, *args, **options):
+        if not os.path.isdir(ASSETS_DIR):
+            self.stdout.write(self.style.ERROR(
+                f"Dossier de photos source introuvable : {ASSETS_DIR}\n"
+                "Vérifie que le dossier products/fixtures/source_photos/ est bien présent "
+                "dans ton clone du projet (il doit être versionné dans Git)."
+            ))
+            return
+
         media_products_dir = os.path.join(settings.MEDIA_ROOT, "products")
         media_categories_dir = os.path.join(settings.MEDIA_ROOT, "categories")
         os.makedirs(media_products_dir, exist_ok=True)
         os.makedirs(media_categories_dir, exist_ok=True)
 
+        # ---- Catégories ----
         cats = {}
         for c in CATEGORIES:
             cat, _ = Category.objects.get_or_create(slug=c["slug"], defaults={"name": c["name"]})
@@ -62,9 +74,16 @@ class Command(BaseCommand):
                     shutil.copyfile(src, os.path.join(settings.MEDIA_ROOT, dst_rel))
                     cat.image = dst_rel
                     cat.save()
-        self.stdout.write(self.style.SUCCESS(f"{len(cats)} catégories prêtes (avec photo)."))
+                else:
+                    self.stdout.write(self.style.WARNING(f"Photo de catégorie introuvable : {c['image']}"))
+        self.stdout.write(self.style.SUCCESS(f"{len(cats)} catégories prêtes."))
 
+        # ---- Produits + photos ----
+        # Idempotent : si le produit existe déjà mais n'a aucune photo (ex. un
+        # précédent seed a échoué à cause des sources manquantes), on complète
+        # ses photos au lieu de l'ignorer.
         created_count = 0
+        completed_count = 0
         for name, price, available, cat_slug, images in PRODUCTS:
             product, created = Product.objects.get_or_create(
                 name=name,
@@ -78,9 +97,14 @@ class Command(BaseCommand):
                                     f"For every mood. Every you.",
                 },
             )
-            if not created:
-                continue
-            created_count += 1
+            if created:
+                created_count += 1
+            elif product.images.exists():
+                continue  # déjà créé ET déjà illustré : rien à faire
+            else:
+                completed_count += 1
+
+            added = 0
             for i, filename in enumerate(images):
                 src = os.path.join(ASSETS_DIR, filename)
                 if not os.path.exists(src):
@@ -90,11 +114,15 @@ class Command(BaseCommand):
                 dst_rel = os.path.join("products", safe_name)
                 dst_abs = os.path.join(settings.MEDIA_ROOT, dst_rel)
                 shutil.copyfile(src, dst_abs)
-                ProductImage.objects.create(product=product, image=dst_rel, order=i)
+                ProductImage.objects.get_or_create(product=product, order=i, defaults={"image": dst_rel})
+                added += 1
             status = "disponible" if available else "RUPTURE DE STOCK"
-            self.stdout.write(self.style.SUCCESS(f"✓ {name} ({price} FCFA, {status}, {len(images)} photo(s))"))
+            self.stdout.write(self.style.SUCCESS(f"✓ {name} ({price} FCFA, {status}, {added} photo(s))"))
 
         for city, fee in SHIPPING_RATES:
             ShippingRate.objects.get_or_create(city=city, defaults={"fee": fee})
 
-        self.stdout.write(self.style.SUCCESS(f"\nTerminé : {created_count} nouveaux produits créés sur {len(PRODUCTS)}."))
+        self.stdout.write(self.style.SUCCESS(
+            f"\nTerminé : {created_count} produit(s) créé(s), {completed_count} complété(s) en photos, "
+            f"sur {len(PRODUCTS)} au total."
+        ))
