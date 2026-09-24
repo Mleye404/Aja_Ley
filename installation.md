@@ -1,6 +1,9 @@
 python3 -m venv .venv #linux
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 .\venv\Scripts\Activate.ps1 #windows
+
 source .venv/bin/activate
+
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py seed_ajaley
